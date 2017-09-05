@@ -20,34 +20,32 @@
  *
  */
 
-#include "common/scummsys.h"
+#ifndef BACKENDS_TIMER_IMPL_QT_H
+#define BACKENDS_TIMER_IMPL_QT_H
 
-#if defined(POSIX) && !defined(MACOSX) && !defined(SAMSUNGTV) && !defined(MAEMO) && !defined(WEBOS) && !defined(LINUXMOTO) && !defined(GPH_DEVICE) && !defined(GP2X) && !defined(DINGUX) && !defined(OPENPANDORA) && !defined(PLAYSTATION3) && !defined(PSP2) && !defined(ANDROIDSDL) && !defined(QT_BACKEND)
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
 
-#include "backends/platform/sdl/posix/posix.h"
-#include "backends/plugins/sdl/sdl-provider.h"
-#include "base/main.h"
+#include "backends/platform/qt/qt-sys.h"
 
-int main(int argc, char *argv[]) {
+#include "backends/timer/default/default-timer.h"
 
-	// Create our OSystem instance
-	g_system = new OSystem_POSIX();
-	assert(g_system);
+/**
+ * Qt timer. Setups the timer callback for
+ * DefaultTimerManager.
+ */
+class QtTimer : public QObject {
+	Q_OBJECT
+public:
+	QtTimer(DefaultTimerManager *manager);
+	virtual ~QtTimer();
 
-	// Pre initialize the backend
-	((OSystem_POSIX *)g_system)->init();
+public slots:
+	void timerCallback();
 
-#ifdef DYNAMIC_MODULES
-	PluginManager::instance().addPluginProvider(new SDLPluginProvider());
-#endif
+protected:
+	QTimer *_timer;
+	DefaultTimerManager *_manager;
+};
 
-	// Invoke the actual ScummVM main entry point:
-	int res = scummvm_main(argc, argv);
-
-	// Free OSystem
-	g_system->destroy();
-
-	return res;
-}
 
 #endif

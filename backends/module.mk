@@ -304,6 +304,26 @@ MODULE_OBJS += \
 	graphics/psp2sdl/psp2sdl-graphics.o
 endif
 
+# Qt specific source files.
+# We cannot just check $BACKEND = qt, as various other backends
+# derive from the Qt backend, and they all need the following files.
+ifdef QT_BACKEND
+MODULE_OBJS += \
+	events/qt/qt-events.o \
+	events/qt/qt-eventfilter.o \
+	events/qt/qt-eventfilter_moc.o \
+	fs/qt/qt-fs.o \
+	fs/qt/qt-fs-factory.o \
+	graphics/qt/qt-graphics.o \
+	mixer/qt/qt-mixer.o \
+	mixer/qt/qt-mixer-impl.o \
+	mixer/qt/qt-mixer-impl_moc.o \
+	mutex/qt/qt-mutex.o \
+	timer/qt/qt-timer.o \
+	timer/qt/qt-timer-impl.o \
+	timer/qt/qt-timer-impl_moc.o
+endif
+
 ifeq ($(BACKEND),samsungtv)
 MODULE_OBJS += \
 	events/samsungtvsdl/samsungtvsdl-events.o \

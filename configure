@@ -2040,6 +2040,14 @@ if test "$cxx_verc_fail" = yes ; then
 	exit 1
 fi
 
+
+#
+# Qt backend needs C++11
+#
+if test "$_backend" = "qt" ; then
+	_use_cxx11=yes
+fi
+
 #
 # Check whether the compiler supports C++11
 #
@@ -2049,6 +2057,7 @@ int main(int argc, char *argv[]) { if (argv == nullptr) return -1; else return 0
 EOF
 cc_check -std=c++11 && have_cxx11=yes
 if test "$_use_cxx11" = "yes" ; then
+	echo "c++11 FOUND"
 	_use_cxx11=$have_cxx11
 fi
 
@@ -3541,6 +3550,14 @@ case $_backend in
 		append_var MODULES "backends/platform/sdl"
 		append_var INCLUDES "-I$VITASDK/arm-vita-eabi/include/SDL2"
 		;;
+	qt)
+		append_var LIBS "`pkg-config --libs Qt5Core Qt5Gui Qt5Multimedia`"
+		append_var CXXFLAGS  "`pkg-config --cflags Qt5Core Qt5Gui Qt5Multimedia`"
+		append_var DEFINES "-DQT_BACKEND"
+		add_line_to_config_mk "QT_BACKEND = 1"
+		_dynamic_modules=yes
+		_opengl_mode=any
+		;;
 	samsungtv)
 		append_var DEFINES "-DSAMSUNGTV"
 		append_var LDFLAGS "-shared"
@@ -3655,7 +3672,7 @@ esac
 # Enable 16bit support only for backends which support it
 #
 case $_backend in
-	3ds | android | androidsdl | dingux | dc | gph | iphone | ios7 | maemo | openpandora | psp | psp2 | samsungtv | sdl | tizen | webos | wii)
+	3ds | android | androidsdl | dingux | dc | gph | iphone | ios7 | maemo | openpandora | psp | psp2 | qt | samsungtv | sdl | tizen | webos | wii)
 		if test "$_16bit" = auto ; then
 			_16bit=yes
 		else

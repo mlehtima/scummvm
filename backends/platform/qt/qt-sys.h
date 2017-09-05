@@ -20,34 +20,34 @@
  *
  */
 
+#ifndef BACKEND_QT_SYS_H
+#define BACKEND_QT_SYS_H
+
+// The purpose of this header is to include the Qt headers in a uniform
+// fashion.
+
 #include "common/scummsys.h"
 
-#if defined(POSIX) && !defined(MACOSX) && !defined(SAMSUNGTV) && !defined(MAEMO) && !defined(WEBOS) && !defined(LINUXMOTO) && !defined(GPH_DEVICE) && !defined(GP2X) && !defined(DINGUX) && !defined(OPENPANDORA) && !defined(PLAYSTATION3) && !defined(PSP2) && !defined(ANDROIDSDL) && !defined(QT_BACKEND)
-
-#include "backends/platform/sdl/posix/posix.h"
-#include "backends/plugins/sdl/sdl-provider.h"
-#include "base/main.h"
-
-int main(int argc, char *argv[]) {
-
-	// Create our OSystem instance
-	g_system = new OSystem_POSIX();
-	assert(g_system);
-
-	// Pre initialize the backend
-	((OSystem_POSIX *)g_system)->init();
-
-#ifdef DYNAMIC_MODULES
-	PluginManager::instance().addPluginProvider(new SDLPluginProvider());
-#endif
-
-	// Invoke the actual ScummVM main entry point:
-	int res = scummvm_main(argc, argv);
-
-	// Free OSystem
-	g_system->destroy();
-
-	return res;
-}
+#include <QAudioOutput>
+#include <QDesktopServices>
+#include <QDir>
+#include <QDirIterator>
+#include <QEvent>
+#include <QFile>
+#include <QFileInfo>
+#include <QGuiApplication>
+#include <QIODevice>
+#include <QKeyEvent>
+#include <QMouseEvent>
+#include <QMutex>
+#include <QOpenGLContext>
+#include <QResizeEvent>
+#include <QScreen>
+#include <QThread>
+#include <QTime>
+#include <QTimer>
+#include <QTouchEvent>
+#include <QWheelEvent>
+#include <QWindow>
 
 #endif

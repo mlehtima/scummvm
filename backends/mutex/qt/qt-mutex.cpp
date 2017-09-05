@@ -20,34 +20,29 @@
  *
  */
 
+#define FORBIDDEN_SYMBOL_ALLOW_ALL
+
 #include "common/scummsys.h"
 
-#if defined(POSIX) && !defined(MACOSX) && !defined(SAMSUNGTV) && !defined(MAEMO) && !defined(WEBOS) && !defined(LINUXMOTO) && !defined(GPH_DEVICE) && !defined(GP2X) && !defined(DINGUX) && !defined(OPENPANDORA) && !defined(PLAYSTATION3) && !defined(PSP2) && !defined(ANDROIDSDL) && !defined(QT_BACKEND)
+#if defined(QT_BACKEND)
 
-#include "backends/platform/sdl/posix/posix.h"
-#include "backends/plugins/sdl/sdl-provider.h"
-#include "base/main.h"
+#include "backends/mutex/qt/qt-mutex.h"
+#include "backends/platform/qt/qt-sys.h"
 
-int main(int argc, char *argv[]) {
+OSystem::MutexRef QtMutexManager::createMutex() {
+	return (OSystem::MutexRef) new QMutex(QMutex::Recursive);
+}
 
-	// Create our OSystem instance
-	g_system = new OSystem_POSIX();
-	assert(g_system);
+void QtMutexManager::lockMutex(OSystem::MutexRef mutex) {
+	((QMutex *)mutex)->lock();
+}
 
-	// Pre initialize the backend
-	((OSystem_POSIX *)g_system)->init();
+void QtMutexManager::unlockMutex(OSystem::MutexRef mutex) {
+	((QMutex *)mutex)->unlock();
+}
 
-#ifdef DYNAMIC_MODULES
-	PluginManager::instance().addPluginProvider(new SDLPluginProvider());
-#endif
-
-	// Invoke the actual ScummVM main entry point:
-	int res = scummvm_main(argc, argv);
-
-	// Free OSystem
-	g_system->destroy();
-
-	return res;
+void QtMutexManager::deleteMutex(OSystem::MutexRef mutex) {
+	delete (QMutex *)mutex;
 }
 
 #endif

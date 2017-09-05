@@ -20,34 +20,24 @@
  *
  */
 
-#include "common/scummsys.h"
+#ifndef BACKENDS_TIMER_QT_H
+#define BACKENDS_TIMER_QT_H
 
-#if defined(POSIX) && !defined(MACOSX) && !defined(SAMSUNGTV) && !defined(MAEMO) && !defined(WEBOS) && !defined(LINUXMOTO) && !defined(GPH_DEVICE) && !defined(GP2X) && !defined(DINGUX) && !defined(OPENPANDORA) && !defined(PLAYSTATION3) && !defined(PSP2) && !defined(ANDROIDSDL) && !defined(QT_BACKEND)
+#include "backends/timer/default/default-timer.h"
 
-#include "backends/platform/sdl/posix/posix.h"
-#include "backends/plugins/sdl/sdl-provider.h"
-#include "base/main.h"
+#include "backends/timer/qt/qt-timer-impl.h"
 
-int main(int argc, char *argv[]) {
+/**
+ * Qt timer manager. Wrapper for the Qt timer implementation.
+ */
+class QtTimerManager : public DefaultTimerManager {
+public:
+	QtTimerManager();
+	virtual ~QtTimerManager();
 
-	// Create our OSystem instance
-	g_system = new OSystem_POSIX();
-	assert(g_system);
+protected:
+	QtTimer *_timer;
+};
 
-	// Pre initialize the backend
-	((OSystem_POSIX *)g_system)->init();
-
-#ifdef DYNAMIC_MODULES
-	PluginManager::instance().addPluginProvider(new SDLPluginProvider());
-#endif
-
-	// Invoke the actual ScummVM main entry point:
-	int res = scummvm_main(argc, argv);
-
-	// Free OSystem
-	g_system->destroy();
-
-	return res;
-}
 
 #endif
